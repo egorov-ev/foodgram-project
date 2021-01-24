@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test response</title>
+</head>
+<body>
+
+</body>
+
+{% for recipe in page %}
+    {{ recipe.title }}
+    {{ recipe.text }}
+{% endfor %}
+
+
+{% for tag in tags %}
+    {{ tag.title }}, {{ tag.color }}
+{% endfor %}
+
+{{ all_tags }}
+
+</html>
