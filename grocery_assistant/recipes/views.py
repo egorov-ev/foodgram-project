@@ -10,11 +10,11 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 # from .forms import CommentForm, PostForm
 # from .models import Follow, Group, Post
-
+from .forms import RecipeForm
 from .models import Ingredient, Recipe, RecipeIngredient, Tag
 
 # from .. import recipes
@@ -71,38 +71,96 @@ def recipe(request):  # tmp
     return None
 
 
+class NewRecipe(CreateView):
+    """
+    Создаем новый рецепт.
+    """
+    form_class = RecipeForm
+    template_name = "recipes/recipe.html"
+    success_url = reverse_lazy("index")
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        response = super(NewRecipe, self).form_valid(form)
+        return response
+
+
+class EditRecipe(UpdateView):
+    """
+    Изменяем содержимое рецепта.
+    """
+    model = Recipe
+    template_name = 'recipes/recipe.html'
+    fields = ['title', 'tags', 'ingredients', 'cooking_time', 'text',
+              'image', ]
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Проверяем, что только автор поста может его изменить.
+        """
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            return redirect(
+                reverse('recipe', kwargs={
+                    'username': obj.author,
+                    'recipe_id': obj.id})
+            )
+        response = super(EditRecipe, self).dispatch(request, *args, **kwargs)
+        return response
+
+    def get_context_data(self, **kwargs):
+        """
+        Изменяем шаблон в зависимости сценария.
+        """
+        context = super().get_context_data(**kwargs)
+        context['source'] = True
+        return context
+
+
+class DeleteRecipe(DeleteView):
+    """
+    Удаляем рецепт.
+    """
+    model = Recipe
+    success_url = reverse_lazy('index')
+
+    # добавить в шаблон recipe.html {% url 'delete_recipe' author.get_username recipe.id %}
+
+
 def profile_view(request):
     pass
     return None
 
 
-#
-# def follow_param(request, username):
-#     """
-#     Вспомогательная функция, возвращает параметры для подписки:
-#         - существование подписки (true/false);
-#         - количество подписчиков;
-#         - количество подписок;
-#         - автора;
-#         - подписчика.
-#     """
-#     follow = {'follow': True,
-#               'following_count': 0,
-#               'follower_count': 0,
-#               'follower': '',
-#               'author': ''}
-#     follower = request.user
-#     author = get_object_or_404(User, username=username)
-#     follow[
-#         'follow'] = request.user.is_authenticated and Follow.objects.filter(
-#         user_id=follower.id,
-#         author_id=author.id).exists()
-#     follow['following_count'] = author.follower.count()
-#     follow['follower_count'] = author.following.count()
-#     follow['follower'] = follower
-#     follow['author'] = author
-#
-#     return follow
+def follow_param(request, username):
+    """
+    Вспомогательная функция, возвращает параметры для подписки:
+        - существование подписки (true/false);
+        - количество подписчиков;
+        - количество подписок;
+        - автора;
+        - подписчика.
+    """
+    follow = {'follow': True,
+              'following_count': 0,
+              'follower_count': 0,
+              'follower': '',
+              'author': ''}
+    follower = request.user
+    author = get_object_or_404(User, username=username)
+    follow[
+        'follow'] = request.user.is_authenticated and Follow.objects.filter(
+        user_id=follower.id,
+        author_id=author.id).exists()
+    follow['following_count'] = author.follower.count()
+    follow['follower_count'] = author.following.count()
+    follow['follower'] = follower
+    follow['author'] = author
+
+    return follow
+
+
 #
 #
 # def post_view(request, username, post_id):
