@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 # static
-static/
 .static
+static/

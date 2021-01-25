@@ -24,7 +24,7 @@ TAGS = ['breakfast', 'lunch', 'dinner']
 
 
 # @cache_page(20, key_prefix="index_page")
-def views_recipes(request):
+def index(request):
     """"
     TODO добавить описание
     """

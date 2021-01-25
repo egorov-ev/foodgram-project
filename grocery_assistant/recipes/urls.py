@@ -1,22 +1,19 @@
-from django.urls import path
+from django.urls import path, include
 
 from . import views
 
-urlpatterns = [
-    path('', views.views_recipes, name="views_recipes"),
+recipes_urls = [
+    path('recipe/', views.recipe, name='recipe_new'),  # tmp
 ]
 
-recipes_urls = []
-
-urlpatterns += [
-    # path('', views.index, name='index'),
-    path('subscriptions/', views.subscriptions, name='subscriptions'),
-    path('favorites/', views.favorites, name='favorites'),
+urlpatterns = [
+    path('', views.index, name="index"),
+    path('subscriptions/', views.subscriptions, name='subscriptions'),  # tmp
+    path('favorites/', views.favorites, name='favorites'),  # tmp
     path('purchases/', views.purchases, name='purchases'),  # tmp
-    path('recipe/', views.recipe, name='recipe'),  # tmp
-    # path('purchases/', include(purchases_urls)),
-    # path('recipe/', include(recipes_urls)),
+    path('recipe/', include(recipes_urls)),
     path('<str:username>/', views.profile_view, name='profile_view'),
+    # path('purchases/', include(purchases_urls)),
 ]
 
 #     path("new/", views.NewPost.as_view(), name="new_post"),
