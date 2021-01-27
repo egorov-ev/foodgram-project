@@ -80,18 +80,16 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(Ingredient,
                                    verbose_name='Ингредиент',
                                    on_delete=models.CASCADE)
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name='Рецепт',
-        related_name='ingredients_amounts'
-    )
-    quantity = models.DecimalField(
-        max_digits=6,
-        decimal_places=1,
-        verbose_name='Количество',
-        validators=[MinValueValidator(1)]
-    )
+    recipe = models.ForeignKey(Recipe,
+                               on_delete=models.CASCADE,
+                               verbose_name='Рецепт',
+                               related_name='ingredients_amounts'
+                               )
+    quantity = models.DecimalField(max_digits=6,
+                                   decimal_places=1,
+                                   verbose_name='Количество',
+                                   validators=[MinValueValidator(1)]
+                                   )
 
     class Meta:
         unique_together = ('ingredient', 'recipe')
