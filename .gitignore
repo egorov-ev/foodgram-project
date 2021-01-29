@@ -129,4 +129,7 @@ dmypy.json
 .pyre/
 
 # static
+static/
+media/
+.media/
 .static/

@@ -1,21 +1,16 @@
-from django.shortcuts import render
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 
-# from .forms import CommentForm, PostForm
-# from .models import Follow, Group, Post
 from .forms import RecipeForm
 from .models import Ingredient, Recipe, RecipeIngredient, Tag
-
-# from .. import recipes
 
 User = get_user_model()
 TAGS = ['breakfast', 'lunch', 'dinner']
@@ -33,7 +28,7 @@ def index(request):
     # recipe_list = Recipe.objects.select_related().all()
     recipe_list = Recipe.objects.filter(tags__title__in=tags).select_related(
         'author').prefetch_related('tags').distinct()
-    paginator = Paginator(recipe_list, 10)
+    paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     response = render(
@@ -50,22 +45,52 @@ def index(request):
     return response
 
 
-def subscriptions():
-    pass
-    return None
+def subscriptions(request):
+    """
+    Возвращает список рецептов избранных авторов.
+    """
+    # recipe_list = Recipe.objects.filter(author__following__user=request.user)
+    recipe_list = User.objects.filter(
+        following__user=request.user).prefetch_related('recipes').annotate(
+        recipe_count=Count('recipes')).order_by('username')
+    paginator = Paginator(recipe_list, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    response = render(request,
+                      "recipes/follow.html",
+                      {
+                          'page': page,
+                          'paginator': paginator
+                      }
+                      )
+    return response
 
 
 def favorites(request):
-    pass
-    return None
+    tags = request.GET.getlist('tag', TAGS)
+    all_tags = Tag.objects.all()
+
+    # recipe_list = Recipe.objects.filter(tags__title__in=tags).select_related(
+    #     'author').prefetch_related('tags').distinct()
+
+    recipe_list = Recipe.objects.filter(favored_by__user=request.user,
+                                        tags__title__in=tags).select_related(
+        'author').prefetch_related('tags').distinct()
+
+    paginator = Paginator(recipe_list, 6)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+    response = render(request,
+                      "recipes/favorites.html",
+                      {
+                          'page': page,
+                          'paginator': paginator
+                      }
+                      )
+    return response
 
 
-def purchases(request):  # tmp
-    pass
-    return None
-
-
-def recipe(request):  # tmp
+def purchases(request):
     pass
     return None
 
