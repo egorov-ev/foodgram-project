@@ -9,6 +9,15 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView, DeleteView, UpdateView
 
+import pdfkit
+
+from decimal import Decimal
+
+from django.db import transaction, IntegrityError
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
+
 from .forms import RecipeForm
 from .models import Ingredient, Recipe, RecipeIngredient, Tag
 
@@ -95,18 +104,73 @@ def purchases(request):
     return None
 
 
-class NewRecipe(CreateView):
-    """
-    Создаем новый рецепт.
-    """
-    form_class = RecipeForm
-    template_name = "recipes/recipe.html"
-    success_url = reverse_lazy("index")
+# class NewRecipe(CreateView):
+#     """
+#     Создаем новый рецепт.
+#     """
+#     form_class = RecipeForm
+#     template_name = "recipes/formRecipe.html"
+#     success_url = reverse_lazy("index")
+#
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         response = super(NewRecipe, self).form_valid(form)
+#         return response
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        response = super(NewRecipe, self).form_valid(form)
-        return response
+def get_ingredients(request):
+    """
+    Parse POST request body for ingredient names and their respective amounts.
+    """
+    ingredients = {}
+    for key, name in request.POST.items():
+        if key.startswith('nameIngredient'):
+            num = key.split('_')[1]
+            ingredients[name] = request.POST[
+                f'valueIngredient_{num}'
+            ]
+
+    return ingredients
+
+
+def save_recipe(request, form):
+    """
+    Create and save a Recipe instance with neccessary m2m relationships.
+    """
+    try:
+        with transaction.atomic():
+            recipe = form.save(commit=False)
+            recipe.author = request.user
+            recipe.save()
+
+            objs = []
+            ingredients = get_ingredients(request)
+            for name, quantity in ingredients.items():
+                ingredient = get_object_or_404(Ingredient, title=name)
+                objs.append(
+                    RecipeIngredient(
+                        recipe=recipe,
+                        ingredient=ingredient,
+                        quantity=Decimal(quantity.replace(',', '.'))
+                    )
+                )
+            RecipeIngredient.objects.bulk_create(objs)
+
+            form.save_m2m()
+            return recipe
+    except IntegrityError:
+        raise HttpResponseBadRequest
+
+
+def recipe_new(request):
+    form = RecipeForm(request.POST or None, files=request.FILES or None)
+    if form.is_valid():
+        recipe = save_recipe(request, form)
+
+        return redirect(
+            'slug_recipe_view', recipe_id=recipe.id, slug=recipe.slug
+        )
+
+    return render(request, 'recipes/formRecipe.html', {'form': form})
 
 
 class EditRecipe(UpdateView):
@@ -114,7 +178,7 @@ class EditRecipe(UpdateView):
     Изменяем содержимое рецепта.
     """
     model = Recipe
-    template_name = 'recipes/recipe.html'
+    template_name = 'recipes/formRecipe.html'
     fields = ['title', 'tags', 'ingredients',
               'cooking_time', 'text', 'image', ]
 

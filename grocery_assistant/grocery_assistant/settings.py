@@ -47,6 +47,7 @@ INTERNAL_IPS = [
 INSTALLED_APPS = [
     'recipes',
     'users',
+    'api',
     'django.contrib.sites',  # новое
     'django.contrib.flatpages',  # новое
     'django.contrib.admin',
@@ -84,6 +85,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            # 'libraries': {  # Adding this section should work around the issue.
+            #     'staticfiles': 'django.templatetags.static', }
         },
     },
 ]
