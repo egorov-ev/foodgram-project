@@ -24,18 +24,16 @@ from django.urls import include, path
 handler404 = "recipes.views.page_not_found"  # noqa
 handler500 = "recipes.views.server_error"  # noqa
 
-# flatpages
-# path('about/', include('django.contrib.flatpages.urls')),
-
 flatpages_urls = [
     path('', flatpage, {'url': '/author/'}, name='about_author'),
     path('', flatpage, {'url': '/tech/'}, name='about_tech'),
 ]
 
 urlpatterns = [
+    path('auth/', include('users.urls')),
     path('admin/', admin.site.urls),
     path('', include('recipes.urls')),
-    path('auth/', include('users.urls')),
+    path('api/', include('api.urls')),
     path('about/', include(flatpages_urls)),
     # path('auth/', include('django.contrib.auth.urls')),
 ]

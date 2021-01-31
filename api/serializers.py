@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from grocery_assistant.recipes.models import Ingredient
+from recipes.models import Ingredient
 
 from .models import Favorite, Purchase, Subscription
 
@@ -14,8 +14,9 @@ class CustomModelSerializer(serializers.ModelSerializer):
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('title', 'dimension')
+        fields = ('title', 'unit_measure')
         model = Ingredient
+
 
 
 class SubscriptionSerializer(CustomModelSerializer):

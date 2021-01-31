@@ -12,12 +12,15 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -31,12 +34,7 @@ SITE_ID = 1
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "[::1]",
-    "testserver",
-]
+ALLOWED_HOSTS = ['84.201.142.184', '0.0.0.0:8000', 'localhost', '127.0.0.1']
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -45,11 +43,11 @@ INTERNAL_IPS = [
 # Application definition
 
 INSTALLED_APPS = [
-    'recipes',
     'users',
+    'recipes',
     'api',
-    'django.contrib.sites',  # новое
-    'django.contrib.flatpages',  # новое
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail',
+    'rest_framework',
     'debug_toolbar',
 ]
 
@@ -73,10 +72,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'grocery_assistant.urls'
 
+TEMPLATES_DIR = BASE_DIR / 'templates'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,6 +85,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'recipes.context_processors.shop_list_size'
             ],
             # 'libraries': {  # Adding this section should work around the issue.
             #     'staticfiles': 'django.templatetags.static', }
@@ -138,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'ru-Ru'
 
 TIME_ZONE = 'UTC'
 
@@ -156,3 +158,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = 'index'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}

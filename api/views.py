@@ -3,7 +3,7 @@ from rest_framework import filters, mixins, status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from grocery_assistant.recipes.models import Ingredient
+from recipes.models import Ingredient
 
 from .models import Favorite, Purchase, Subscription
 from .serializers import (FavoriteSerializer, IngredientSerializer,

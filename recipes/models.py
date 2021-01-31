@@ -2,6 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+from autoslug import AutoSlugField
 
 # Create your models here.
 
@@ -38,8 +39,7 @@ class Recipe(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='recipes',
-        verbose_name='Автор публикации (пользователь)'
-    )
+        verbose_name='Автор публикации (пользователь)')
     title = models.CharField('Название рецепта', max_length=200)
     image = models.ImageField('Картинка',
                               upload_to='grocery_assistant/recipes/img/')
@@ -47,21 +47,15 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient',
-        verbose_name='Ингредиент'
-    )
+        verbose_name='Ингредиент')
     cooking_time = models.PositiveSmallIntegerField('Время приготовления')
-    # slug = AutoSlugField(populate_from='title', allow_unicode=True)
-    slug = models.SlugField(unique=True, verbose_name="Slug рецепта")
-    tags = models.ManyToManyField(
-        'Tag',
-        related_name='recipes',
-        verbose_name='Теги'
-    )
-    pub_date = models.DateTimeField(
-        'Дата публикации',
-        auto_now_add=True,
-        db_index=True
-    )
+    slug = AutoSlugField(populate_from='title', allow_unicode=True,
+                         unique=True)
+    # slug = models.SlugField(unique=True, verbose_name="Slug рецепта")
+    tags = models.ManyToManyField('Tag', related_name='recipes',
+                                  verbose_name='Теги')
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True,
+                                    db_index=True)
 
     class Meta:
         ordering = ('-pub_date',)
