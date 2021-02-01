@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Favorite(models.Model):
     """
-    TODO Заполнить
+    TBD
     """
     user = models.ForeignKey(
         User,
@@ -31,7 +31,7 @@ class Favorite(models.Model):
 
 class Subscription(models.Model):
     """
-    TODO Заполнить
+    TBD
     """
     user = models.ForeignKey(
         User,
@@ -54,7 +54,7 @@ class Subscription(models.Model):
 
 class Purchase(models.Model):
     """
-    TODO Заполнить
+    TBD
     """
     user = models.ForeignKey(
         User,

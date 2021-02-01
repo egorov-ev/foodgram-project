@@ -20,7 +20,7 @@
     <div class="single-card__header-info">
       <h1 class="single-card__title">{{ recipe.title }}</h1>   
       <div class="single-card__favorite">
-        {% include './includes/button.html' with recipe=recipe big=True %}
+        {% include './includes/favorite_recipe.html' with recipe=recipe big=True %}
       </div>
     </div>
 
@@ -34,7 +34,7 @@
       <p class="single-card__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
       <ul class="single-card__items">
         <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span> {{ recipe.author }}</p></li>
-        {% if user.is_superuser or recipe.author == user %}
+        {% if user.is_superuser or recipe.author == request.user %}
           <li class="single-card__item">  <a style="margin-left: 2.5em" href="{% url 'edit_recipe' recipe.id recipe.slug %}" class="single-card__text">Редактировать рецепт</a></li>
         {% endif %}
       </ul>

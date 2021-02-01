@@ -18,7 +18,6 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
 
 
-
 class SubscriptionSerializer(CustomModelSerializer):
     class Meta:
         fields = ('author',)

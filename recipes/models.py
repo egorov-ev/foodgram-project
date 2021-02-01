@@ -1,10 +1,7 @@
-# from autoslug import AutoSlugField
+from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from autoslug import AutoSlugField
-
-# Create your models here.
 
 User = get_user_model()
 
@@ -13,14 +10,9 @@ class Ingredient(models.Model):
     """
     TBD
     """
-    title = models.CharField('Название ингредиента',
-                             max_length=150,
-                             db_index=True
-                             )
-    # dimension = models.CharField('Единица измерения', max_length=10)
-    unit_measure = models.CharField('Единица измерения', max_length=5)
-
-    # quantity = models.Count('Количество', )
+    title = models.CharField('Название ингредиента', max_length=150,
+                             db_index=True)
+    unit_measure = models.CharField('Единица измерения', max_length=7)
 
     class Meta:
         ordering = ('title',)
@@ -35,23 +27,19 @@ class Recipe(models.Model):
     """
     TBD
     """
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='recipes',
-        verbose_name='Автор публикации (пользователь)')
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name='recipes',
+                               verbose_name='Автор публикации (пользователь)')
     title = models.CharField('Название рецепта', max_length=200)
     image = models.ImageField('Картинка',
                               upload_to='grocery_assistant/recipes/img/')
     text = models.TextField('Текстовое описание')
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        through='RecipeIngredient',
-        verbose_name='Ингредиент')
+    ingredients = models.ManyToManyField(Ingredient,
+                                         through='RecipeIngredient',
+                                         verbose_name='Ингредиент')
     cooking_time = models.PositiveSmallIntegerField('Время приготовления')
     slug = AutoSlugField(populate_from='title', allow_unicode=True,
                          unique=True)
-    # slug = models.SlugField(unique=True, verbose_name="Slug рецепта")
     tags = models.ManyToManyField('Tag', related_name='recipes',
                                   verbose_name='Теги')
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True,
@@ -70,11 +58,9 @@ class RecipeIngredient(models.Model):
     """
     TBD
     """
-    ingredient = models.ForeignKey(Ingredient,
-                                   verbose_name='Ингредиент',
+    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
                                    on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe,
-                               on_delete=models.CASCADE,
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='Рецепт',
                                related_name='ingredients_amounts'
                                )

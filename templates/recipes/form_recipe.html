@@ -15,7 +15,6 @@
 <div class="form-container">
     <form class="form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-
         <div class="form__group">
             <label for="{{ form.title.id_for_label }}" class="form__label">Название
                 рецепта</label>
@@ -114,11 +113,7 @@
         <div class="form__footer">
             <button class="button button_style_blue">
                 {% if recipe %}
-                Сохранить
-            </button>
-            <a style="margin-left: 2.5em"
-               href="{% url 'delete_recipe' recipe.id recipe.slug %}"
-               class="form__ingredient-link">Удалить</a>
+                Сохранить </button> <a style="margin-left: 2.5em" href="{% url 'delete_recipe' recipe.id recipe.slug %}" class="form__ingredient-link">Удалить</a>
             {% else %}
             Создать рецепт
             {% endif %}</button>

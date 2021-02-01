@@ -15,6 +15,11 @@ recipes_urls = [
          name='slug_recipe_view', ),
 ]
 
+purchases_urls = [
+    path('', views.purchases, name='purchases'),
+    path('download/', views.purchases_download, name='purchases_download'),
+]
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('subscriptions/', views.subscriptions, name='subscriptions'),
@@ -22,5 +27,5 @@ urlpatterns = [
     path('purchases/', views.purchases, name='purchases'),
     path('<str:username>/', views.profile_view, name='profile_view'),
     path('recipes/', include(recipes_urls)),
-    # path('purchases/', include(purchases_urls)),
+    path('purchases/', include(purchases_urls)),
 ]

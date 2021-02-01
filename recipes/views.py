@@ -1,36 +1,30 @@
-from decimal import Decimal
+import io
 
-import pdfkit
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db import IntegrityError, transaction
-from django.db.models import Count
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.db.models import Count, Sum
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import ModelFormMixin
 
 from .forms import RecipeForm
-from .models import Recipe, Tag
+from .models import Recipe, RecipeIngredient, Tag
+from .utils import generate_pdf
 
 User = get_user_model()
 TAGS = ['breakfast', 'lunch', 'dinner']
 
 
-# @cache_page(20, key_prefix="index_page")
-# @login_required TODO главная отличается для авторизовнных и не авторизованных
 def index(request):
     """"
     TODO добавить описание
     """
     tags = request.GET.getlist('tag', TAGS)
     all_tags = Tag.objects.all()
-
-    # recipe_list = Recipe.objects.select_related().all()
     recipe_list = Recipe.objects.filter(tags__title__in=tags).select_related(
         'author').prefetch_related('tags').distinct()
     paginator = Paginator(recipe_list, 6)
@@ -50,11 +44,11 @@ def index(request):
     return response
 
 
+@login_required
 def subscriptions(request):
     """
     Возвращает список рецептов избранных авторов.
     """
-    # recipe_list = Recipe.objects.filter(author__following__user=request.user)
     recipe_list = User.objects.filter(
         following__user=request.user).prefetch_related('recipes').annotate(
         recipe_count=Count('recipes')).order_by('username')
@@ -71,47 +65,62 @@ def subscriptions(request):
     return response
 
 
+@login_required
 def favorites(request):
     tags = request.GET.getlist('tag', TAGS)
     all_tags = Tag.objects.all()
-
-    # recipe_list = Recipe.objects.filter(tags__title__in=tags).select_related(
-    #     'author').prefetch_related('tags').distinct()
-
     recipe_list = Recipe.objects.filter(favored_by__user=request.user,
                                         tags__title__in=tags).select_related(
         'author').prefetch_related('tags').distinct()
-
     paginator = Paginator(recipe_list, 6)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    response = render(request,
-                      "recipes/favorites.html",
+    response = render(request, 'recipes/favorites.html',
                       {
                           'page': page,
-                          'paginator': paginator
+                          'paginator': paginator,
+                          'tags': tags,
+                          'all_tags': all_tags,
                       }
                       )
     return response
 
 
+@login_required
 def purchases(request):
-    pass
-    return None
+    """
+    TBD
+    """
+    recipes = request.user.purchases.all()
+    return render(
+        request,
+        'recipes/purchases.html',
+        {'recipes': recipes},
+    )
 
 
+@method_decorator(login_required, name='dispatch')
 class NewRecipe(CreateView):
     """
     Создаем новый рецепт.
     """
     form_class = RecipeForm
-    template_name = "recipes/formRecipe.html"
+    template_name = "recipes/form_recipe.html"
     success_url = reverse_lazy("index")
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         response = super(NewRecipe, self).form_valid(form)
         return response
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        for ingredient in form.cleaned_data['ingredients']:
+            recipe_ingredient = RecipeIngredient()
+            recipe_ingredient.ingredient = self.object
+            recipe_ingredient.recipe = ingredient
+            recipe_ingredient.save()
+        return super(ModelFormMixin, self).form_valid(form)
 
 
 # def get_ingredients(request):
@@ -169,30 +178,28 @@ class NewRecipe(CreateView):
 
 # return render(request, 'recipes/formRecipe.html', {'form': form})
 
-
+@method_decorator(login_required, name='dispatch')
 class EditRecipe(UpdateView):
     """
     Изменяем содержимое рецепта.
     """
-    model = Recipe
-    template_name = 'recipes/formRecipe.html'
+    model = Recipe  # Ingredient
+    template_name = 'recipes/form_recipe.html'
     fields = ['title', 'tags', 'ingredients',
               'cooking_time', 'text', 'image', ]
 
-    # @method_decorator(login_required)
-    # def dispatch(self, request, *args, **kwargs):
-    #     """
-    #     Проверяем, что только автор поста может его изменить.
-    #     """
-    #     obj = self.get_object()
-    #     if obj.author != self.request.user:
-    #         return redirect(
-    #             reverse('index', kwargs={
-    #                 'username': obj.author,
-    #                 'recipe_id': obj.id})
-    #         )
-    #     response = super(EditRecipe, self).dispatch(request, *args, **kwargs)
-    #     return response
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Проверяем, что только автор рецепта может его изменить.
+        """
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            return redirect(reverse('slug_recipe_view', kwargs={
+                'slug': obj.slug,
+                'recipe_id': obj.id}))
+        response = super(EditRecipe, self).dispatch(request, *args, **kwargs)
+        return response
 
     # def get_context_data(self, **kwargs):
     #     """
@@ -203,14 +210,14 @@ class EditRecipe(UpdateView):
     #     return context
 
 
+@method_decorator(login_required, name='dispatch')
 class DeleteRecipe(DeleteView):
     """
     Удаляем рецепт.
     """
     model = Recipe
+    template_name = 'recipes/form_recipe.html'
     success_url = reverse_lazy('index')
-
-    # добавить в шаблон recipe.html {% url 'delete_recipe' author.get_username recipe.id %}
 
 
 def profile_view(request, username):
@@ -222,8 +229,7 @@ def profile_view(request, username):
 
     author = get_object_or_404(User, username=username)
     author_recipes = author.recipes.filter(
-        tags__title__in=tags
-    ).prefetch_related('tags').distinct()
+        tags__title__in=tags).prefetch_related('tags').distinct()
 
     paginator = Paginator(author_recipes, 9)
     page_number = request.GET.get('page')
@@ -266,13 +272,25 @@ def slug_recipe_view(request, recipe_id, slug):
     return response
 
 
+@login_required
+def purchases_download(request):
+    """
+    TBD
+    """
+    ingredients = request.user.purchases.select_related('recipe').order_by(
+        'recipe__ingredients__title').values(
+        'recipe__ingredients__title', 'recipe__ingredients__unit_measure'
+    ).annotate(amount=Sum('recipe__ingredients_amounts__quantity')).all()
+
+    pdf = generate_pdf('recipes/includes/shop_list.html',
+                       {'ingredients': ingredients})
+
+    return FileResponse(io.BytesIO(pdf), filename='ingredients.pdf',
+                        as_attachment=True)
+
+
 def page_not_found(request, exception):
-    return render(
-        request,
-        "misc/404.html",
-        {"path": request.path},
-        status=404
-    )
+    return render(request, "misc/404.html", {"path": request.path}, status=404)
 
 
 def server_error(request):

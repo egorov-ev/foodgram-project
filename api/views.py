@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from recipes.models import Ingredient
 
-from .models import Favorite, Purchase, Subscription
+from .models import Favorite, Subscription
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           PurchaseSerializer, SubscriptionSerializer)
 
