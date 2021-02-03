@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Favorite(models.Model):
     """
-    TBD
+    Модель избранных рецептов.
     """
     user = models.ForeignKey(
         User,
@@ -31,7 +31,7 @@ class Favorite(models.Model):
 
 class Subscription(models.Model):
     """
-    TBD
+    Модель подписки на авторов.
     """
     user = models.ForeignKey(
         User,

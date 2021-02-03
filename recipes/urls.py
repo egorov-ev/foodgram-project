@@ -3,9 +3,7 @@ from django.urls import include, path
 from . import views
 
 recipes_urls = [
-    path('new/', views.NewRecipe.as_view(),
-         name='new_recipe'),
-    # path('new/', views.recipe_new, name='new_recipe'),
+    path('new/', views.NewRecipe.as_view(), name='new_recipe'),
     path('<int:recipe_id>/<slug:slug>/edit/', views.EditRecipe.as_view(),
          name='edit_recipe'),
     path('<int:recipe_id>/<slug:slug>/delete/', views.DeleteRecipe.as_view(),

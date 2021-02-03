@@ -7,13 +7,13 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'x^5zlk0-98=mx+z!8_#%qqien_6%mj3412q3!i#j65^0-ip%2*'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 SITE_ID = 1
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['84.201.142.184', '0.0.0.0:8000', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['84.201.142.184', 'localhost', '127.0.0.1']
 
 INTERNAL_IPS = ["127.0.0.1", ]
 
@@ -87,15 +87,14 @@ DATABASES = {
 }
 
 # TODO подключить postgres
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': os.environ.get('DB_ENGINE'),
-#         'NAME': os.environ.get('DB_NAME'),
-#         'USER': os.environ.get('POSTGRES_USER'),
-#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-#         'HOST': os.environ.get('DB_HOST'),
-#         'PORT': os.environ.get('DB_PORT'),
+#         'ENGINE': os.environ['DB_ENGINE'],
+#         'NAME': os.environ['DB_NAME'],
+#         'USER': os.environ['POSTGRES_USER'],
+#         'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+#         'HOST': os.environ['DB_HOST'],
+#         'PORT': os.environ['DB_PORT'],
 #     }
 # }
 

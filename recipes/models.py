@@ -8,7 +8,7 @@ User = get_user_model()
 
 class Ingredient(models.Model):
     """
-    TBD
+    Модель ингредиента.
     """
     title = models.CharField('Название ингредиента', max_length=150,
                              db_index=True)
@@ -25,7 +25,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     """
-    TBD
+    Модель рецепта
     """
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name='recipes',
@@ -56,19 +56,17 @@ class Recipe(models.Model):
 
 class RecipeIngredient(models.Model):
     """
-    TBD
+    Модель хранящая в себе связь рецепта и ингредиента.
     """
-    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
-                                   on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='Рецепт',
-                               related_name='ingredients_amounts'
-                               )
+                               related_name='ingredients_amounts')
+    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
+                                   on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=6,
                                    decimal_places=1,
                                    verbose_name='Количество',
-                                   validators=[MinValueValidator(1)]
-                                   )
+                                   validators=[MinValueValidator(1)])
 
     class Meta:
         unique_together = ('ingredient', 'recipe')
@@ -78,7 +76,7 @@ class RecipeIngredient(models.Model):
 
 class Tag(models.Model):
     """
-    TBD
+    Модель "тэга"
     """
     title = models.CharField('Имя тега', max_length=50, db_index=True)
     display_name = models.CharField('Имя тега для шаблона', max_length=50)

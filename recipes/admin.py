@@ -33,11 +33,17 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('title', 'unit_measure')
+    list_display = ('pk', 'title', 'unit_measure')
     search_fields = ('^title',)
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('title', 'color', 'display_name')
+    list_display = ('pk', 'title', 'color', 'display_name')
     list_filter = ('title',)
+
+
+@admin.register(RecipeIngredient)
+class RecipeIngredient(admin.ModelAdmin):
+    list_display = ('pk', 'recipe', 'ingredient', 'quantity')
+    list_filter = ('recipe',)

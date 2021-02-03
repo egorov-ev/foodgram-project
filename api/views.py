@@ -13,22 +13,15 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 class CreateDestroyViewSet(mixins.CreateModelMixin,
                            mixins.DestroyModelMixin,
                            viewsets.GenericViewSet):
-    """
-    tbd
-    """
 
     def get_object(self, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
         filter_kwargs = {
             self.lookup_field: self.kwargs[lookup_url_kwarg],
-            **kwargs,
-        }
-
+            **kwargs, }
         obj = get_object_or_404(queryset, **filter_kwargs)
         self.check_object_permissions(self.request, obj)
-
         return obj
 
     def destroy(self, request, *args, **kwargs):
@@ -38,9 +31,6 @@ class CreateDestroyViewSet(mixins.CreateModelMixin,
 
 
 class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    """
-    tbd
-    """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (filters.SearchFilter,)
@@ -48,9 +38,6 @@ class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class SubscriptionViewSet(CreateDestroyViewSet):
-    """
-    tbd
-    """
     queryset = Subscription.objects.all()
     serializer_class = SubscriptionSerializer
     permission_classes = (IsAuthenticated,)
@@ -58,9 +45,6 @@ class SubscriptionViewSet(CreateDestroyViewSet):
 
 
 class FavoriteViewSet(CreateDestroyViewSet):
-    """
-    tbd
-    """
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
     permission_classes = (IsAuthenticated,)
@@ -68,9 +52,6 @@ class FavoriteViewSet(CreateDestroyViewSet):
 
 
 class PurchaseViewSet(mixins.ListModelMixin, CreateDestroyViewSet):
-    """
-    tbd
-    """
     serializer_class = PurchaseSerializer
     permission_classes = (IsAuthenticated,)
     lookup_field = 'recipe'
