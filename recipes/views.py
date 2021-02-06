@@ -115,18 +115,43 @@ class EditRecipe(LoginRequiredMixin, UpdateView):
     """
     Изменение содержимого рецепта.
     """
-    # form_class = RecipeForm
+    form_class = RecipeForm
     model = Recipe
     template_name = 'recipes/form_recipe.html'
-    fields = ['title', 'tags', 'ingredients',
-              'cooking_time', 'text', 'image', ]
+    success_url = reverse_lazy('index')
 
-    @method_decorator(login_required)
+    # success_url = reverse_lazy('index')
+
+    # fields = ['title', 'tags', 'ingredients',
+    #           'cooking_time', 'text', 'image', ]
+
+    # def get(self, request, *args, **kwargs):
+    #     print(dir(request))
+    #     self.object = self.get_object()
+    #     print(dir(self.object))
+    #     print(self.object.ingredients)
+    #     if request.user != self.object.author:
+    #         return redirect(self.object.get_absolute_url())
+    #     return super().get(request, *args, **kwargs)
+
+    # def get_context_data(self, **kwargs):
+    #     context = {}
+    #     if self.object:
+    #         context['object'] = self.object
+    #         print(context)
+    #         context_object_name = self.get_context_object_name(self.object)
+    #         if context_object_name:
+    #             context[context_object_name] = self.object
+    #     context.update(kwargs)
+    #     return super().get_context_data(**context)
+
+    # @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         """
         Проверяем, что только автор рецепта может его изменить.
         """
         obj = self.get_object()
+        # print(obj.title)
         if obj.author != self.request.user:
             return redirect(reverse('slug_recipe_view', kwargs={
                 'slug': obj.slug, 'recipe_id': obj.id}))
@@ -139,7 +164,7 @@ class DeleteRecipe(LoginRequiredMixin, DeleteView):
     """
     Удаление рецепта.
     """
-    print('сюда попали')
+
     model = Recipe
     # template_name = 'recipes/form_recipe.html'
     # template_name = 'recipes/recipe_check_delete.html'
