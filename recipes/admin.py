@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
 
-from .models import Ingredient, Recipe, RecipeIngredient, Tag
+from .models import Comment, Ingredient, Recipe, RecipeIngredient, Tag
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -15,7 +15,7 @@ class RecipeIngredientInline(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline,)
     list_display = (
-        'id', 'title', 'author', 'slug',
+        'id', 'pub_date', 'title', 'author', 'slug',
         'cooking_time', 'get_favorite_count'
     )
     list_filter = ('author', 'tags__title')
@@ -47,3 +47,9 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeIngredient(admin.ModelAdmin):
     list_display = ('pk', 'recipe', 'ingredient', 'quantity')
     list_filter = ('recipe',)
+
+
+@admin.register(Comment)
+class Comment(admin.ModelAdmin):
+    list_display = ('pk', 'post', 'author', 'text', 'comment_pub_date',)
+    list_filter = ('post', 'author', 'comment_pub_date')

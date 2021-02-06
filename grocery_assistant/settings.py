@@ -69,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'recipes.context_processors.shop_list_size'
+                # 'recipes.context_processors.shop_list_size'
             ],
             # 'libraries': {  # Adding this section should work around the issue.
             #     'staticfiles': 'django.templatetags.static', }
@@ -86,7 +86,7 @@ DATABASES = {
     }
 }
 
-# TODO подключить postgres
+# TODO: подключить postgre на этапе DevOps
 # DATABASES = {
 #     'default': {
 #         'ENGINE': os.environ['DB_ENGINE'],

@@ -1,69 +1,66 @@
 from django import forms
-from django.forms import ModelForm
+from django.shortcuts import get_object_or_404
 
 from .models import Ingredient, Recipe, RecipeIngredient, Tag
 
 
-class RecipeForm(ModelForm):
+class RecipeForm(forms.ModelForm):
     """
     Форма модели Recipe для добавления/удаления/изменения рецепта.
     """
+
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(), to_field_name="title", )
+        queryset=Tag.objects.all(), to_field_name='title', )
     ingredients = forms.ModelMultipleChoiceField(
-        queryset=Ingredient.objects.all(), to_field_name="title"
-    )
+        queryset=Ingredient.objects.all(), to_field_name='title')
     amount = []
 
     class Meta:
         model = Recipe
-        fields = ('title', 'tags', 'ingredients', 'cooking_time', 'text',
-                  'image',)
+        fields = (
+            'title', 'tags', 'ingredients', 'cooking_time', 'text', 'image',
+        )
         widgets = {'tags': forms.CheckboxSelectMultiple(), }
+        localized_fields = '__all__'
 
-    def __init__(self, data=None, *args, **kwargs):
+    def __init__(self, data=None, *args, **kwargs):  # v3
         if data is not None:
             data = data.copy()
-            print(data)
-            ingredients = self.get_ingredients(data)
-            print(ingredients)
-            for item in ingredients:
+            self.recipe_ingredients = self.parse_ingredients(data)
+            for item in self.recipe_ingredients:
                 data.update({"ingredients": item})
-            self.amount = self.get_amount(data)
 
         super().__init__(data=data, *args, **kwargs)
 
-    def save(self, commit=True):
-        recipe_obj = super().save(commit=False)
-        recipe_obj.save()
-        ingredients_amount = self.amount
-        recipe_obj.RecipeIngredient_set.all().delete()
-        recipe_obj.RecipeIngredient_set.set([RecipeIngredient(
-            recipe=recipe_obj,
-            ingredient=ingredient,
-            quantity=ingredients_amount[ingredient.title], )
-            for ingredient in self.cleaned_data["ingredients"]],
-            bulk=False, )
-        self.save_m2m()
-        return recipe_obj
-
-    def get_ingredients(self, query_data):
+    def parse_ingredients(self, data):  # v3
         """
-        Возвращает список с названием ингредиентов
+        Возвращает справочник: {название ингредиента ; количество}.
         """
-        ingredients = [query_data[key]
-                       for key in query_data.keys()
-                       if key.startswith("nameIngredient")]
+        ingredients = {}
+        for index, ingredient in data.items():
+            if index.startswith('nameIngredient'):
+                value = index.split('_')[1]
+                ingredients[ingredient] = data[f'valueIngredient_{value}']
         return ingredients
 
-    def get_amount(self, q_dict):
+    def save(self, commit=True):
         """
-        Возвращает словарь ингредиент:количество
+        Сохраняем сущность Рецепт с m2m связью
         """
-        result = {}
-        for key in q_dict.keys():
-            if key.startswith("nameIngredient"):
-                n = key.split("_")[1]
-                result[q_dict["nameIngredient_" + n]] = q_dict[
-                    "valueIngredient_" + n]
-        return result
+        instance = forms.ModelForm.save(self, False)
+        instance.save()
+
+        ingredients = self.recipe_ingredients
+
+        query = []
+        for ingredient_name, value in ingredients.items():
+            ingredient = get_object_or_404(Ingredient, title=ingredient_name)
+            query.append(RecipeIngredient(
+                recipe=instance,
+                ingredient=ingredient,
+                quantity=value,
+            ))
+
+        RecipeIngredient.objects.bulk_create(query)
+        self.save_m2m()
+        return instance

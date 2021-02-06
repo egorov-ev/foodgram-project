@@ -1,8 +1,9 @@
 import pdfkit
+
 from django.template.loader import get_template
 
 
-def generate_pdf(template_name, context):
+def generate_purchases_pdf(template_name, context):
     """
     Generate a PDF file from Django template.
     """

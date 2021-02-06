@@ -23,13 +23,14 @@
                         <span class="form__error">{{ form.title.errors }}</span>
                     </div>
                 </div>
+
                 <div class="form__group">
                     <p class="form__label">Теги</p>
                     <div class="form__field-group">
                         <div class="tags">{% for tag in form.fields.tags.choices.queryset %}
                             <div class="tags__item">
-                                <input type="checkbox" name="tags" id="id_{{ tag.name }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" value="{{ tag.pk }}"
-                                {% if tag.pk in form.tags.value %} checked {% endif %}>
+                                <input type="checkbox" name="tags" id="id_{{ tag.name }}" class="tags__checkbox tags__checkbox_style_{{ tag.color }}" value="{{ tag.title }}"
+                                {% if tag.title in form.tags.value %} checked {% endif %}>
                                 <label for="id_{{ tag.name }}" class="tags__label">{{ tag.display_name }}</label>
                             </div>
                         {% endfor %}
@@ -90,6 +91,7 @@
                     {% if recipe %}
                     <button class="button button_style_blue">Сохранить</button>
                     <a style="margin-left: 2.5em" href="{% url 'delete_recipe' recipe.id recipe.slug %}" class="form__ingredient-link">Удалить</a>
+                    <form method="POST" action="{% url 'delete_recipe' recipe.id recipe.slug  %}">{% csrf_token %}<input type="submit" value="DELETE"></form>
                     {% else %}
                     <button class="button button_style_blue">Создать рецепт</button>
                     {% endif %}

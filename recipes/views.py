@@ -14,7 +14,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView
 
 from .forms import RecipeForm
 from .models import Recipe, Tag
-from .utils import generate_pdf
+from .utils import generate_purchases_pdf  # , save_recipe,edit_recipe,
 
 User = get_user_model()
 TAGS = ['breakfast', 'lunch', 'dinner']
@@ -98,27 +98,24 @@ def profile_view(request, username):
     )
 
 
-# https://stackoverflow.com/questions/49932426/save-many-to-many-field-django-forms
-
-@method_decorator(login_required, name='dispatch')
 class NewRecipe(LoginRequiredMixin, CreateView):
     """
     Создание нового рецепта.
     """
     form_class = RecipeForm
-    template_name = "recipes/form_recipe.html"
-    success_url = reverse_lazy("index")
+    template_name = 'recipes/form_recipe.html'
+    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
 
-@method_decorator(login_required, name='dispatch')
 class EditRecipe(LoginRequiredMixin, UpdateView):
     """
     Изменение содержимого рецепта.
     """
+    # form_class = RecipeForm
     model = Recipe
     template_name = 'recipes/form_recipe.html'
     fields = ['title', 'tags', 'ingredients',
@@ -137,13 +134,15 @@ class EditRecipe(LoginRequiredMixin, UpdateView):
         return response
 
 
-@method_decorator(login_required, name='dispatch')
-class DeleteRecipe(DeleteView):
+# @method_decorator(login_required, name='dispatch')
+class DeleteRecipe(LoginRequiredMixin, DeleteView):
     """
     Удаление рецепта.
     """
+    print('сюда попали')
     model = Recipe
-    template_name = 'recipes/form_recipe.html'
+    # template_name = 'recipes/form_recipe.html'
+    # template_name = 'recipes/recipe_check_delete.html'
     success_url = reverse_lazy('index')
 
 
@@ -193,7 +192,7 @@ def favorites(request):
 @login_required
 def purchases(request):
     """
-    Вовзвращает список покупок пользователя.
+    Возвращает список покупок пользователя.
     """
     recipes = request.user.purchases.all()
     return render(
@@ -215,8 +214,8 @@ def purchases_download(request):
         'recipe__ingredients__title', 'recipe__ingredients__unit_measure'
     ).annotate(amount=Sum('recipe__ingredients_amounts__quantity')).all()
 
-    pdf = generate_pdf('recipes/includes/shop_list.html',
-                       {'ingredients': ingredients})
+    pdf = generate_purchases_pdf('recipes/includes/purchases_list.html',
+                                 {'ingredients': ingredients})
 
     return FileResponse(io.BytesIO(pdf), filename='ingredients.pdf',
                         as_attachment=True)
