@@ -12,6 +12,7 @@
        <div class="main__header">
             <h1 class="main__title">{% if recipe %}Редактирование{% else %}Создание{%endif%} рецепта</h1>
         </div>
+
         <div class="form-container">
             <form class="form" method="post" enctype="multipart/form-data" action="{% if recipe %}{% url 'edit_recipe' recipe.id recipe.slug %}{% else %}{% url 'new_recipe' %}{% endif %}">
                 {% csrf_token %}
@@ -74,12 +75,14 @@
                         <span class="form__error">{{ form.cooking_time.errors }}</span>
                     </div>
                 </div>
+
                 <div class="form__group">
                     <label for="{{ form.text.id_for_label }}" class="form__label">{{ form.text.label }}</label>
                     <div class="form__field-group">{{ form.text|add_class:"form__textarea" }}
                         <span class="form__error">{{ form.text.errors }}</span>
                     </div>
                 </div>
+
                 <div class="form__group">
                     <span class="form__label">Загрузить фото</span>
                     <div class="form__field-group">
@@ -87,11 +90,11 @@
                         <span class="form__error">{{ form.image.errors }}</span>
                     </div>
                 </div>
+
                 <div class="form__footer">
                     {% if recipe %}
                     <button class="button button_style_blue">Сохранить</button>
                     <a style="margin-left: 2.5em" href="{% url 'delete_recipe' recipe.id recipe.slug %}" class="form__ingredient-link">Удалить</a>
-                    <form method="POST" action="{% url 'delete_recipe' recipe.id recipe.slug  %}">{% csrf_token %}<input type="submit" value="DELETE"></form>
                     {% else %}
                     <button class="button button_style_blue">Создать рецепт</button>
                     {% endif %}

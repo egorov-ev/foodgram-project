@@ -12,15 +12,13 @@ class Ingredient(models.Model):
     """
     title = models.CharField('Название ингредиента', max_length=150,
                              db_index=True)
-    unit_measure = models.CharField('Единица измерения', max_length=7)
+    unit_measure = models.CharField('Единица измерения', max_length=12)
 
     class Meta:
         ordering = ('title',)
         verbose_name = 'ингредиент'
         verbose_name_plural = 'ингредиенты'
 
-    # def __str__(self):
-    #     return f'{self.title}, {self.unit_measure}'
     def __str__(self):
         return self.title
 
@@ -39,7 +37,6 @@ class Recipe(models.Model):
     text = models.TextField('Текстовое описание')
     ingredients = models.ManyToManyField(Ingredient,
                                          through='RecipeIngredient',
-                                         # related_name='RecipeIngredient',
                                          verbose_name='Ингредиент')
     cooking_time = models.PositiveSmallIntegerField('Время приготовления')
     slug = AutoSlugField(populate_from='title',
@@ -79,12 +76,6 @@ class RecipeIngredient(models.Model):
         verbose_name = 'ингредиент рецепта'
         verbose_name_plural = 'ингредиенты в рецепте'
 
-    def __str__(self):
-        return (
-            f"{self.ingredient.title} - {self.quantity} "
-            f"{self.ingredient.unit_measure}"
-        )
-
 
 class Tag(models.Model):
     """
@@ -102,7 +93,7 @@ class Tag(models.Model):
         return self.display_name
 
 
-class Comment(models.Model):  # TODO реализовать форму с комментариями к посту
+class Comment(models.Model):  # TODO реализовать комментарии к рецепту
     """
     Модель комментария к рецепту.
     """
