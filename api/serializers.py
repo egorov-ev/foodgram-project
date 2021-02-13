@@ -11,9 +11,9 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         fields = ('author',)
 
     def validate(self, attrs):
-        if (self.context["request"].user == attrs
-                and self.context["request"].method == "POST"):
-            raise serializers.ValidationError("Невозможно подписаться на себя")
+        if (self.context['request'].user == attrs
+                and self.context['request'].method == 'POST'):
+            raise serializers.ValidationError('Невозможно подписаться на себя')
         return attrs
 
 

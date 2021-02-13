@@ -2,6 +2,7 @@ from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -72,16 +73,27 @@ class RecipeIngredient(models.Model):
                                    validators=[MinValueValidator(1)])
 
     class Meta:
-        unique_together = ('ingredient', 'recipe')
+        UniqueConstraint(fields=['ingredient', 'recipe'], name='unique_recipe')
         verbose_name = 'ингредиент рецепта'
         verbose_name_plural = 'ингредиенты в рецепте'
 
 
 class Tag(models.Model):
     """
-    Модель "тэга"
+    Модель "тэга".
     """
-    title = models.CharField('Имя тега', max_length=50, db_index=True)
+    TAG_BREAKFAST = 'Завтра'
+    TAG_LUNCH = 'Обед'
+    TAG_DINNER = 'Ужин'
+    TAG_CHOICES = [
+        (TAG_BREAKFAST, 'breakfast'),
+        (TAG_LUNCH, 'lunch'),
+        (TAG_DINNER, 'dinner'),
+    ]
+    title = models.CharField('Имя тега',
+                             choices=TAG_CHOICES,
+                             max_length=50,
+                             db_index=True)
     display_name = models.CharField('Имя тега для шаблона', max_length=50)
     color = models.CharField('Цвет тега', max_length=50)
 
@@ -90,23 +102,23 @@ class Tag(models.Model):
         verbose_name_plural = 'теги'
 
     def __str__(self):
-        return self.display_name
+        return self.title
 
 
-class Comment(models.Model):  # TODO реализовать комментарии к рецепту
+class Comment(models.Model):  # TODO: реализовать комментарии к рецепту
     """
     Модель комментария к рецепту.
     """
     post = models.ForeignKey(Recipe,
                              on_delete=models.SET_NULL,
-                             related_name="comments", blank=True, null=True,
-                             verbose_name="Комментарий к рецепту", )
+                             related_name='comments', blank=True, null=True,
+                             verbose_name='Комментарий к рецепту', )
     author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               verbose_name="Автор комментария",
-                               related_name="comments", )
+                               verbose_name='Автор комментария',
+                               related_name='comments', )
     text = models.TextField(max_length=1000,
-                            verbose_name="Текст комментария", )
-    comment_pub_date = models.DateTimeField("date published",
+                            verbose_name='Текст комментария', )
+    comment_pub_date = models.DateTimeField('date published',
                                             auto_now_add=True,
                                             db_index=True)
 

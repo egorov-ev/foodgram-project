@@ -1,5 +1,5 @@
 from rest_framework import filters, mixins, viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from recipes.models import Ingredient
 
@@ -20,6 +20,7 @@ class CreateListDestroyViewSet(
 class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    permission_classes = (IsAdminUser,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('^title',)
 

@@ -4,7 +4,7 @@ from django.template.loader import get_template
 
 def generate_purchases_pdf(template_name, context):
     """
-    Generate a PDF file from Django template.
+    Генерация по шаблону PDF файла со списком покупок пользователя.
     """
     pdf_options = {
         'page-size': 'Letter',
@@ -17,3 +17,15 @@ def generate_purchases_pdf(template_name, context):
     }
     html = get_template(template_name).render(context)
     return pdfkit.from_string(html, False, options=pdf_options)
+
+
+def parse_ingredients(data):
+    """
+    Возвращает справочник: {название ингредиента ; количество}.
+    """
+    ingredients = {}
+    for index, ingredient in data.items():
+        if index.startswith('nameIngredient'):
+            value = index.split('_')[1]
+            ingredients[ingredient] = data[f'valueIngredient_{value}']
+    return ingredients

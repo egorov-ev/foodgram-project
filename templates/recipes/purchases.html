@@ -4,6 +4,7 @@
 {% load user_filters %}
 
 {% block title %}Список покупок{% endblock %}
+
 {% block css %}
   <link rel="stylesheet" href="{% static 'pages/shopList.css' %}">
 {% endblock %}
@@ -24,6 +25,7 @@
     <a href="{% url 'purchases_download' %}"><button class="button button_style_blue">Скачать список</button></a>
   </div>
 {% endblock %}
+
 {% block js %}
   <script src="{% static 'js/config/config.js' %}"></script>
   <script src="{% static 'js/components/ShopList.js' %}"></script>

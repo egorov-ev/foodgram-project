@@ -4,25 +4,13 @@ from django import forms
 from django.shortcuts import get_object_or_404
 
 from .models import Ingredient, Recipe, RecipeIngredient, Tag
-
-
-def parse_ingredients(data):
-    """
-    Возвращает справочник: {название ингредиента ; количество}.
-    """
-    ingredients = {}
-    for index, ingredient in data.items():
-        if index.startswith('nameIngredient'):
-            value = index.split('_')[1]
-            ingredients[ingredient] = data[f'valueIngredient_{value}']
-    return ingredients
+from .utils import parse_ingredients
 
 
 class RecipeForm(forms.ModelForm):
     """
     Форма модели Recipe для добавления/удаления/изменения рецепта.
     """
-
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(), to_field_name='title', )
     ingredients = forms.ModelMultipleChoiceField(
@@ -31,7 +19,12 @@ class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = (
-            'title', 'tags', 'ingredients', 'cooking_time', 'text', 'image',
+            'title',
+            'tags',
+            'ingredients',
+            'cooking_time',
+            'text',
+            'image',
         )
         widgets = {'tags': forms.CheckboxSelectMultiple(), }
         localized_fields = '__all__'
@@ -41,7 +34,7 @@ class RecipeForm(forms.ModelForm):
             data = data.copy()
             self.recipe_ingredients = parse_ingredients(data)
             for item in self.recipe_ingredients:
-                data.update({"ingredients": item})
+                data.update({'ingredients': item})
 
         super().__init__(data=data, *args, **kwargs)
 
@@ -49,8 +42,9 @@ class RecipeForm(forms.ModelForm):
         """
         Сохраняем сущность Рецепт с m2m связью.
         """
-        instance = forms.ModelForm.save(self, False)
+        instance = self.save(commit=False)
         instance.save()
+
         ingredients = self.recipe_ingredients
         instance.ingredients.clear()
 

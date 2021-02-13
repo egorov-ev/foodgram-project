@@ -69,7 +69,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'recipes.context_processors.shop_list_size'
+                'recipes.context_processors.shop_list_size',
+                'recipes.context_processors.all_tags',
             ],
         },
     },
@@ -130,3 +131,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
+
+PAGINATION_PAGE_SIZE = 3

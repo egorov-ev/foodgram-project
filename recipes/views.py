@@ -5,37 +5,40 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Sum
+from django.db.models import Count, Sum
 from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView
+
+from grocery_assistant.settings import PAGINATION_PAGE_SIZE
 
 from .forms import RecipeForm
 from .models import Recipe, Tag
 from .utils import generate_purchases_pdf
 
 User = get_user_model()
-TAGS = ['breakfast', 'lunch', 'dinner']
 
-logger = logging.getLogger(__name__)
+logging.basicConfig(filename='app.log',
+                    filemode='w',
+                    format='%(asctime)s-%(levelname)s-%(message)s',
+                    datefmt='%d-%b-%y%H:%M:%S')
 
 
 def index(request):
     """"
     Выводит список всех рецептов отсортированных по дате на главную страницу.
     """
-    tags = request.GET.getlist('tag', TAGS)
-    all_tags = Tag.objects.all()
+    tags = list(Tag.objects.filter().all())
     recipe_list = Recipe.objects.filter(tags__title__in=tags).distinct()
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     response = render(request, 'recipes/index.html', {
         'page': page,
         'paginator': paginator,
         'tags': tags,
-        'all_tags': all_tags, }
+    }
                       )
     return response
 
@@ -56,8 +59,8 @@ def slug_recipe_view(request, recipe_id, slug):
     response = render(request,
                       'recipes/recipe_page.html',
                       {
-                          "author": recipe.author,
-                          "recipe": recipe,
+                          'author': recipe.author,
+                          'recipe': recipe,
                       }
                       )
     return response
@@ -67,14 +70,12 @@ def profile_view(request, username):
     """
     Возвращает профайл пользователя с его рецептами.
     """
-    tags = request.GET.getlist('tag', TAGS)
-    all_tags = Tag.objects.all()
-
+    tags = list(Tag.objects.filter().all())
     author = get_object_or_404(User, username=username)
     author_recipes = author.recipes.filter(
         tags__title__in=tags).prefetch_related('tags').distinct()
 
-    paginator = Paginator(author_recipes, 9)
+    paginator = Paginator(author_recipes, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
@@ -86,7 +87,6 @@ def profile_view(request, username):
             'page': page,
             'paginator': paginator,
             'tags': tags,
-            'all_tags': all_tags,
         }
     )
 
@@ -138,18 +138,17 @@ def favorites(request):
     """
     Возвращает список избранных рецептов.
     """
-    tags = request.GET.getlist('tag', TAGS)
-    all_tags = Tag.objects.all()
+    tags = list(Tag.objects.filter().all())
     recipe_list = Recipe.objects.filter(favored_by__user=request.user,
                                         tags__title__in=tags).distinct()
-    paginator = Paginator(recipe_list, 6)
+    paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     response = render(request, 'recipes/favorites.html',
                       {'page': page,
                        'paginator': paginator,
                        'tags': tags,
-                       'all_tags': all_tags, }
+                       }
                       )
     return response
 
@@ -159,11 +158,13 @@ def subscriptions(request):
     """
     Возвращает список рецептов избранных авторов.
     """
-    recipe_list = User.objects.filter(following__user=request.user)
-    paginator = Paginator(recipe_list, 6)
+    recipe_list = User.objects.filter(
+        following__user=request.user).prefetch_related('recipes').annotate(
+        recipe_count=Count('recipes'))
+    paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
-    response = render(request, "recipes/follow.html",
+    response = render(request, 'recipes/follow.html',
                       {'page': page,
                        'paginator': paginator}
                       )
@@ -176,7 +177,8 @@ def purchases(request):
     Возвращает список покупок пользователя.
     """
     recipes = request.user.purchases.all()
-    return render(request, 'recipes/purchases.html', {'recipes': recipes}, )
+    return render(request, 'recipes/purchases.html',
+                  {'recipes': recipes}, )
 
 
 @login_required
@@ -192,13 +194,6 @@ def purchases_download(request):
     pdf = generate_purchases_pdf('recipes/includes/purchases_list.html',
                                  {'ingredients': ingredients})
 
-    return FileResponse(io.BytesIO(pdf), filename='ingredients.pdf',
+    return FileResponse(io.BytesIO(pdf),
+                        filename='список_покупок.pdf',
                         as_attachment=True)
-
-
-def page_not_found(request, exception):
-    return render(request, "misc/404.html", {"path": request.path}, status=404)
-
-
-def server_error(request):
-    return render(request, "misc/500.html", status=500)
