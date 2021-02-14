@@ -11,8 +11,8 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 SITE_ID = 1
 
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = ['130.193.41.26', 'localhost', '127.0.0.1']
 
