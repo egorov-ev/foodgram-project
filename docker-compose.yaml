@@ -13,7 +13,7 @@ services:
     env_file:
       - ./.env
 
-  foodgram-app:
+  app:
     image: egorovev00/foodgram-project:latest
     restart: always
     depends_on:
@@ -35,4 +35,4 @@ services:
     ports:
       - 80:80
     depends_on:
-      - foodgram-app
+      - app
