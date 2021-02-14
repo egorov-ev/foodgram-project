@@ -14,7 +14,7 @@ SITE_ID = 1
 DEBUG = True
 # DEBUG = False
 
-ALLOWED_HOSTS = ['130.193.41.26', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['130.193.41.26', 'foodgram-app', 'localhost', '127.0.0.1']
 
 # INTERNAL_IPS = ["127.0.0.1", ]
 
