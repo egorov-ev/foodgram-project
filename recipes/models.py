@@ -73,7 +73,8 @@ class RecipeIngredient(models.Model):
                                    validators=[MinValueValidator(1)])
 
     class Meta:
-        UniqueConstraint(fields=['ingredient', 'recipe'], name='unique_recipe')
+        constraints = [UniqueConstraint(fields=['ingredient', 'recipe'],
+                                        name='unique_recipe')]
         verbose_name = 'ингредиент рецепта'
         verbose_name_plural = 'ингредиенты в рецепте'
 
@@ -82,13 +83,13 @@ class Tag(models.Model):
     """
     Модель "тэга".
     """
-    TAG_BREAKFAST = 'Завтра'
-    TAG_LUNCH = 'Обед'
-    TAG_DINNER = 'Ужин'
+    TAG_BREAKFAST = 'breakfast'
+    TAG_LUNCH = 'lunch'
+    TAG_DINNER = 'dinner'
     TAG_CHOICES = [
-        (TAG_BREAKFAST, 'breakfast'),
-        (TAG_LUNCH, 'lunch'),
-        (TAG_DINNER, 'dinner'),
+        (TAG_BREAKFAST, 'Завтрак'),
+        (TAG_LUNCH, 'Обед'),
+        (TAG_DINNER, 'Ужин'),
     ]
     title = models.CharField('Имя тега',
                              choices=TAG_CHOICES,

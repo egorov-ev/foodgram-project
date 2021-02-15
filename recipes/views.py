@@ -29,7 +29,7 @@ def index(request):
     """"
     Выводит список всех рецептов отсортированных по дате на главную страницу.
     """
-    tags = list(Tag.objects.filter().all())
+    tags = Tag.objects.values_list('title')
     recipe_list = Recipe.objects.filter(tags__title__in=tags).distinct()
     paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
@@ -70,7 +70,7 @@ def profile_view(request, username):
     """
     Возвращает профайл пользователя с его рецептами.
     """
-    tags = list(Tag.objects.filter().all())
+    tags = Tag.objects.values_list('title')
     author = get_object_or_404(User, username=username)
     author_recipes = author.recipes.filter(
         tags__title__in=tags).prefetch_related('tags').distinct()
@@ -138,7 +138,7 @@ def favorites(request):
     """
     Возвращает список избранных рецептов.
     """
-    tags = list(Tag.objects.filter().all())
+    tags = Tag.objects.values_list('title')
     recipe_list = Recipe.objects.filter(favored_by__user=request.user,
                                         tags__title__in=tags).distinct()
     paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)

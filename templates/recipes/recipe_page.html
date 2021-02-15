@@ -17,12 +17,12 @@
       {% endthumbnail %}
     <div class="single-card__info">
       {% if user.is_authenticated %}
-      <div class="single-card__header-info">
-        <h1 class="single-card__title">{{ recipe.title }}</h1>
-        <div class="single-card__favorite">
-          {% include './includes/favorite_recipe.html' with recipe=recipe big=True %}
+        <div class="single-card__header-info">
+          <h1 class="single-card__title">{{ recipe.title }}</h1>
+          <div class="single-card__favorite">
+            {% include './includes/favorite_recipe.html' with recipe=recipe big=True %}
+          </div>
         </div>
-      </div>
       {% endif %}
       <ul class="single-card__items">
         {% for tag in recipe.tags.all %}

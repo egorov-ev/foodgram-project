@@ -11,14 +11,18 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 SITE_ID = 1
 
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['130.193.41.26',
-                 'app',
-                 'simplerecipes.ru',
-                 'localhost',
-                 '127.0.0.1']
+# ALLOWED_HOSTS = ['130.193.41.26',
+#                  'app',
+#                  'simplerecipes.ru',
+#                  'www.simplerecipes.ru'
+#                  'localhost',
+#                  '127.0.0.1']
+
+# TODO: использовать для DevOps
+ALLOWED_HOSTS = ['*']
 
 # INTERNAL_IPS = ["127.0.0.1", ]
 

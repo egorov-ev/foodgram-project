@@ -21,7 +21,8 @@ class Favorite(models.Model):
                                verbose_name='Рецепт в избранном', )
 
     class Meta:
-        UniqueConstraint(fields=['user', 'recipe'], name='unique_favorite')
+        constraints = [UniqueConstraint(fields=['user', 'recipe'],
+                                        name='unique_favorite')]
         verbose_name = 'избранный рецепт'
         verbose_name_plural = 'избранные рецепты'
 
@@ -40,7 +41,8 @@ class Subscription(models.Model):
                                verbose_name='Подписчик', )
 
     class Meta:
-        UniqueConstraint(fields=['user', 'recipe'], name='unique_subscription')
+        constraints = [UniqueConstraint(fields=['user', 'author'],
+                                        name='unique_subscription')]
         verbose_name = 'подписка'
         verbose_name_plural = 'подписки'
 
@@ -58,6 +60,7 @@ class Purchase(models.Model):
                                verbose_name='Рецепт в покупках', )
 
     class Meta:
-        UniqueConstraint(fields=['user', 'recipe'], name='unique_purchase')
+        constraints = [UniqueConstraint(fields=['user', 'recipe'],
+                                        name='unique_purchase')]
         verbose_name = 'покупка'
         verbose_name_plural = 'покупки'
