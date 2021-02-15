@@ -42,7 +42,7 @@ class RecipeForm(forms.ModelForm):
         """
         Сохраняем сущность Рецепт с m2m связью.
         """
-        instance = self.save(commit=False)
+        instance = forms.ModelForm.save(self, False)
         instance.save()
 
         ingredients = self.recipe_ingredients

@@ -1,5 +1,7 @@
-from rest_framework import filters, mixins, viewsets
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
 
 from recipes.models import Ingredient
 
@@ -10,11 +12,24 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 
 class CreateListDestroyViewSet(
     mixins.CreateModelMixin,
-    mixins.ListModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
-    pass
+
+    def get_object(self, *args, **kwargs):
+        queryset = self.get_queryset()
+        queryset = self.filter_queryset(queryset)
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg],
+                         **kwargs, }
+        obj = get_object_or_404(queryset, **filter_kwargs)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object(user=self.request.user)
+        success = instance.delete()
+        return Response({'success': bool(success)}, status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -22,7 +37,7 @@ class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminUser,)
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('^title',)
+    search_field = ('^title',)
 
 
 class SubscriptionViewSet(CreateListDestroyViewSet):

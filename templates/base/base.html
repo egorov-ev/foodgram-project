@@ -16,6 +16,7 @@
 
 </head>
   <body class="body">
+    {% csrf_token %}
     {% include './includes/header.html' %}
       <main class="main container">
         {% block content %} {% endblock content %}
