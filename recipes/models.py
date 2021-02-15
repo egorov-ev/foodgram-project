@@ -87,9 +87,9 @@ class Tag(models.Model):
     TAG_LUNCH = 'lunch'
     TAG_DINNER = 'dinner'
     TAG_CHOICES = [
-        (TAG_BREAKFAST, 'Завтрак'),
-        (TAG_LUNCH, 'Обед'),
-        (TAG_DINNER, 'Ужин'),
+        (TAG_BREAKFAST, 'breakfast'),
+        (TAG_LUNCH, 'lunch'),
+        (TAG_DINNER, 'dinner'),
     ]
     title = models.CharField('Имя тега',
                              choices=TAG_CHOICES,
