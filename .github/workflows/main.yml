@@ -18,8 +18,6 @@ jobs:
           pip install -r requirements.txt
       - name: Lint with flake8
         run: flake8 --exclude=api/migrations,recipes/migrations,grocery_assistant/settings.py,grocery_assistant/urls.py
-#      - name: Test with pytest
-#        run: pytest
 
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
@@ -68,4 +66,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: ${{ github.workflow }} успешно выполнен!!
+          message: ${{ github.workflow }} успешно выполнен!

@@ -14,17 +14,12 @@ SITE_ID = 1
 # DEBUG = True
 DEBUG = False
 
-# ALLOWED_HOSTS = ['130.193.41.26',
-#                  'app',
-#                  'simplerecipes.ru',
-#                  'www.simplerecipes.ru'
-#                  'localhost',
-#                  '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # TODO: использовать для DevOps
 ALLOWED_HOSTS = ['*']
 
-# INTERNAL_IPS = ["127.0.0.1", ]
+# INTERNAL_IPS = ["127.0.0.1", ] # отладка проекта
 
 INSTALLED_APPS = [
     'users',
@@ -137,13 +132,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# STATIC_URL = "static/"
-# STATIC_ROOT = BASE_DIR / "static"
-#
-# MEDIA_URL = "media/"
-# MEDIA_ROOT = BASE_DIR / "media"
-
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 
-PAGINATION_PAGE_SIZE = 3
+PAGINATION_PAGE_SIZE = 6
