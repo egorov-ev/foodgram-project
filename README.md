@@ -9,7 +9,8 @@
 публикации других авторов. Сервис позволит пользователям создавать список
 продуктов, которые нужно купить для приготовления выбранных блюд.
 
-Приложение (до хх.хх) доступно по адресу: [simplerecipes.ru](simplerecipes.ru)
+Приложение до 04.02.2021 доступно по
+адресу: [simplerecipes.ru](simplerecipes.ru)
 или [130.193.41.26](http://130.193.41.26)
 
 # Установка приложения на удаленный сервер
@@ -18,8 +19,8 @@
     ```
     git clone https://github.com/egorov-ev/foodgram-project.git
     ```
-2. Установите на серевере docker и docker-compose. Инструкция для установки на
-   ubuntu 20-04 описан в инструкции:
+2. Установите на сервере docker и docker-compose. Например, можно использовать
+   инструкцию установки на ubuntu 20-04 от digitalocean.com:
     - https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04-ru
     - https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04-ru
 3. Создайте в корне проекта файл ".env", укажите в нем следующие переменные:
@@ -30,7 +31,7 @@
     POSTGRES_PASSWORD=postgres # пароль для подключения к БД (установите свой)
     DB_HOST=db # название сервиса (контейнера)
     DB_PORT=5432 # порт для подключения к БДs
-    SECRET_KEY="ХХХХ"
+    SECRET_KEY="ХХХХ" # секретный ключ
     ```
 4. Скопируйте на сервер файлы "host.conf", "docker-compose.yaml", ".env"
    командами:
@@ -38,11 +39,11 @@
     * scp .env {user}@{server-ip}:
     * scp host.conf {user}@{server-ip}:
 
-   Например:
+   Пример команды:
    ```
    ssh egorov-ev@130.193.41.26 scp -r /Users/egorovev/dev/foodgram-project/docker-compose.yaml
    ```
-5. Создайте переменные окружения в разделе secrets настроек репозитория:
+5. Создайте переменные окружения в разделе secrets настроек проекта GitHub:
     ```
     DOCKER_PASSWORD # Пароль от Docker Hub
     DOCKER_USERNAME # Логин от Docker Hub
@@ -65,8 +66,8 @@
     - Автоматический деплой на сервере.
     - Отправка уведомления через бот Telegram.
 
-8. При необходимости можно импортировать базу данных ингредиентов с помощью
-   команды:
+8. При необходимости ингредиенты (около 2000 строк) импортируются в базу с
+   помощью команды:
    ```
    python3 manage.py loaddata fixtures.json
    ```
