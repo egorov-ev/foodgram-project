@@ -13,7 +13,7 @@ SITE_ID = 1
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'simplerecipes.ru', 'www.simplerecipes.ru']
 
 INSTALLED_APPS = [
     'users',
