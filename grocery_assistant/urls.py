@@ -15,8 +15,8 @@ handler500 = 'grocery_assistant.views.server_error'  # noqa
 # ]
 
 flatpages_urls = [
-    path('/author/', flatpage, name='django.contrib.flatpages.views.flatpage'),
-    path('/tech/', flatpage, name='django.contrib.flatpages.views.flatpage'),
+    path('/author/', flatpage, name='about_author'),
+    path('/tech/', flatpage, name='about_tech'),
 ]
 
 urlpatterns = [
