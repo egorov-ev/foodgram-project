@@ -9,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
-SITE_ID = 5
+SITE_ID = 2
 
-# DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
 
@@ -124,10 +124,10 @@ PAGINATION_PAGE_SIZE = 3
 
 # Отладка проекта
 
-DEBUG = True
-
+# DEBUG = True
+#
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
-
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
