@@ -11,10 +11,9 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 SITE_ID = 1
 
-# DEBUG = False
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'simplerecipes.ru', 'www.simplerecipes.ru']
+ALLOWED_HOSTS = ['*', ]
 
 INSTALLED_APPS = [
     'users',

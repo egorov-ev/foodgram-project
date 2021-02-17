@@ -7,16 +7,9 @@ from django.urls import include, path
 handler404 = 'grocery_assistant.views.page_not_found'  # noqa
 handler500 = 'grocery_assistant.views.server_error'  # noqa
 
-# TODO: Добавить шаблоны страниц: author.html и tech.html
-
-# flatpages_urls = [
-#     path('', flatpage, {'url': '/author/'}, name='about_author'),
-#     path('', flatpage, {'url': '/tech/'}, name='about_tech'),
-# ]
-
 flatpages_urls = [
-    path('/author/', flatpage, name='about_author'),
-    path('/tech/', flatpage, name='about_tech'),
+    path('', flatpage, {'url': 'author/'}, name='about_author'),
+    path('', flatpage, {'url': 'tech/'}, name='about_tech'),
 ]
 
 urlpatterns = [
