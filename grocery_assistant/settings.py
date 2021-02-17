@@ -120,4 +120,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = 'index'
 
-PAGINATION_PAGE_SIZE = 6
+PAGINATION_PAGE_SIZE = 3
+
+# Отладка проекта
+
+# DEBUG = True
+
+# ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }

@@ -29,7 +29,8 @@ def index(request):
     """"
     Выводит список всех рецептов отсортированных по дате на главную страницу.
     """
-    tags = request.GET.getlist('tag', Tag.objects.values_list('title'))
+    tags = request.GET.getlist('tag',
+                               Tag.objects.values_list('title', flat=True))
     recipe_list = Recipe.objects.filter(tags__title__in=tags).distinct()
     paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)
     page_number = request.GET.get('page')
@@ -70,7 +71,8 @@ def profile_view(request, username):
     """
     Возвращает профайл пользователя с его рецептами.
     """
-    tags = request.GET.getlist('tag', Tag.objects.values_list('title'))
+    tags = request.GET.getlist('tag',
+                               Tag.objects.values_list('title', flat=True))
     author = get_object_or_404(User, username=username)
     author_recipes = author.recipes.filter(
         tags__title__in=tags).prefetch_related('tags').distinct()
@@ -138,7 +140,8 @@ def favorites(request):
     """
     Возвращает список избранных рецептов.
     """
-    tags = request.GET.getlist('tag', Tag.objects.values_list('title'))
+    tags = request.GET.getlist('tag',
+                               Tag.objects.values_list('title', flat=True))
     recipe_list = Recipe.objects.filter(favored_by__user=request.user,
                                         tags__title__in=tags).distinct()
     paginator = Paginator(recipe_list, PAGINATION_PAGE_SIZE)
@@ -195,5 +198,5 @@ def purchases_download(request):
                                  {'ingredients': ingredients})
 
     return FileResponse(io.BytesIO(pdf),
-                        filename='список_покупок.pdf',
+                        filename='список покупок.pdf',
                         as_attachment=True)
