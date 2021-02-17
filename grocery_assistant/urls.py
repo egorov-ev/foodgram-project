@@ -9,9 +9,14 @@ handler500 = 'grocery_assistant.views.server_error'  # noqa
 
 # TODO: Добавить шаблоны страниц: author.html и tech.html
 
+# flatpages_urls = [
+#     path('', flatpage, {'url': '/author/'}, name='about_author'),
+#     path('', flatpage, {'url': '/tech/'}, name='about_tech'),
+# ]
+
 flatpages_urls = [
-    path('', flatpage, {'url': '/author/'}, name='about_author'),
-    path('', flatpage, {'url': '/tech/'}, name='about_tech'),
+    path('/author/', flatpage, name='django.contrib.flatpages.views.flatpage'),
+    path('/tech/', flatpage, name='django.contrib.flatpages.views.flatpage'),
 ]
 
 urlpatterns = [
