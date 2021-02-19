@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  {% include './includes/ya_metrika.html' %}
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>
-    {% block title %} {% endblock %}
-  </title>
+  <head>
 
-  {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+      {% block title %} {% endblock %}
+    </title>
 
-  {% block css %} {% endblock %}
+    {% load static %}
 
-</head>
+    {% block css %} {% endblock %}
+
+  </head>
   <body class="body">
     {% csrf_token %}
     {% include './includes/header.html' %}
