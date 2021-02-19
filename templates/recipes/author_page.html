@@ -5,10 +5,6 @@
 
 {% block title %}Рецепты{% endblock %}
 
-{% block css %}
-  <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-{% endblock %}
-
 {% block content %}
   {% if user.is_authenticated and author != user %}
     <div class="author-subscribe" data-author="{{ author.id }}">
