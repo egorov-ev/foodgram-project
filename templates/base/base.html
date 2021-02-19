@@ -19,14 +19,11 @@
   </head>
   <body class="body">
     {% csrf_token %}
-      {% include './includes/header.html' %}
-        <main class="main container">
-          {% block content %} {% endblock content %}
-        </main>
-        {%include './includes/footer.html' %}
-          <script src="{% static 'js/config/config.js' %}"></script>
-          <script src="{% static 'js/api/Api.js' %}"></script>
-          <script src="{% static 'js/components/Purchases.js' %}"></script>
-      {% block js %} {% endblock js %}
+    {% include './includes/header.html' %}
+    <main class="main container">
+      {% block content %} {% endblock content %}
+    </main>
+    {%include './includes/footer.html' %}
+    {% block js %} {% endblock js %}
   </body>
 </html>
