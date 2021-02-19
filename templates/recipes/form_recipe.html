@@ -4,6 +4,10 @@
 
 {% load static %}
 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pages/form.css' %}">
+{% endblock %}
+
 {% block content %}
     {% load user_filters %}
        <div class="main__header">

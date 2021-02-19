@@ -5,6 +5,10 @@
 
 {% block title %}{{ recipe.title }}{% endblock %}
 
+{% block css %}
+  <link rel="stylesheet" href="{% static 'pages/single.css' %}">
+{% endblock %}
+
 {% block content %}
   <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
     {% load thumbnail %}
