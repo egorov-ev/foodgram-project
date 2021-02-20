@@ -11,7 +11,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 SITE_ID = 3
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
 
@@ -131,7 +131,7 @@ EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
 # Отладка проекта
-
+#
 # DEBUG = True
 #
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
@@ -142,6 +142,6 @@ EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
-
+#
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
