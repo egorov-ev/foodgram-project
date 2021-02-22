@@ -3,6 +3,7 @@
 {% block title %}{% if recipe %}Редактирование{% else %}Создание{% endif %} рецепта{% endblock %}
 
 {% load static %}
+{% load user_filters %}
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'pages/form.css' %}">
@@ -43,26 +44,15 @@
                         <div class="form__field-group">
                             <div class="form__field-group-ingredientes">
                                 <div class="form__dropdown">
-                                    <input type="text" id="nameIngredient" placeholder="Начните вводить" class="form__input">
+                                    <input type="text" id="nameIngredient" class="form__input" >
                                     <div class="form__dropdown-items"></div>
                                 </div>
                                 <input type="number" id="cantidad" class="form__input" min="0">
                                 <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                             </div>
-                            <div class="form__field-group-ingredientes-container">
-                                {% if form.ingredients %}
-                                    {% for i in recipe.ingredients_amounts.all %}
-                                        <div id="ing_{{ forloop.counter }}"class="form__field-item-ingredient">
-                                            <span>{{ i.ingredient.title }} {{ i.quantity }} {{ i.ingredient.unit_measure }}</span><span class="form__field-item-delete"></span>
-                                            <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ i.ingredient.title }}">
-                                            <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ i.quantity }}">
-                                            <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ i.ingredient.unit_measure }}">
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                            </div>
+                            <div class="form__field-group-ingredientes-container"></div>
                             <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
-                            <span class="form__error">{{ form.ingredients.errors }}</span>
+                            <span class="form__error">{{ error }}</span>
                         </div>
                     </div>
                     <div class="form__group">
@@ -98,10 +88,9 @@
 {% endblock %}
 
 {% block js %}
-    <script src="{% static 'js/components/Header.js' %}"></script>
-    <script src="{% static 'js/utils/debouncing.js' %}"></script>
-    <script src="{% static 'js/formRecipe.js' %}"></script>
-    <script src="{% static 'js/config/config.js' %}"></script>
-    <script src="{% static 'js/api/Api.js' %}"></script>
-    <script src="{% static 'js/components/Purchases.js' %}"></script>
+  <script src="{% static 'js/config/config.js' %}"></script>
+  <script src="{% static 'js/components/Header.js' %}"></script>
+  <script src="{% static 'js/utils/debouncing.js' %}"></script>
+  <script src="{% static 'js/api/Api.js' %}"></script>
+  <script src="{% static 'js/formRecipe.js' %}"></script>
 {% endblock %}

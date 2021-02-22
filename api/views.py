@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, status, viewsets
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipes.models import Ingredient
@@ -35,9 +35,9 @@ class CreateListDestroyViewSet(
 class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
-    search_field = ('^title',)
+    search_fields = ('^title',)
 
 
 class SubscriptionViewSet(CreateListDestroyViewSet):
