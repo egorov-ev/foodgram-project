@@ -50,9 +50,9 @@
         </li>
         {% if user.is_authenticated and recipe.author != user %}
             {% if recipe.author.id|has_follower:user %}
-              <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></li>
+              <button class="button button_style_light-blue button_size_subscribe" name="subscribe">Отписаться от автора</button></li>
             {% else %}
-              <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
+              <button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></li>
             {% endif %}
         {% endif %}
       </ul>
