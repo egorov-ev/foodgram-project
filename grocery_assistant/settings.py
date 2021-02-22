@@ -11,10 +11,6 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 SITE_ID = 3
 
-DEBUG = True
-
-ALLOWED_HOSTS = ['*', ]
-
 INSTALLED_APPS = [
     'users',
     'recipes',
@@ -75,17 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'grocery_assistant.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ['DB_ENGINE'],
-        'NAME': os.environ['DB_NAME'],
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': os.environ['DB_HOST'],
-        'PORT': os.environ['DB_PORT'],
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -130,10 +115,25 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
+# DEBUG = False
+#
+ALLOWED_HOSTS = ['*', ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ['DB_ENGINE'],
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': os.environ['DB_HOST'],
+        'PORT': os.environ['DB_PORT'],
+    }
+}
+
 # Отладка проекта
-#
-# DEBUG = True
-#
+
+DEBUG = True
+
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
 #
 # DATABASES = {
