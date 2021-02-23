@@ -19,6 +19,13 @@ def generate_purchases_pdf(template_name, context):
     return pdfkit.from_string(html, False, options=pdf_options)
 
 
+def clearing_line(num):
+    """
+    Очищает строку от всего кроме цифр.
+    """
+    return ''.join([i for i in num if i.isdigit()])
+
+
 def parse_ingredients(data):
     """
     Возвращает справочник: {название ингредиента ; количество}.
@@ -27,5 +34,6 @@ def parse_ingredients(data):
     for index, ingredient in data.items():
         if index.startswith('nameIngredient'):
             value = index.split('_')[1]
-            ingredients[ingredient] = data[f'valueIngredient_{value}']
+            ingredients[ingredient] = clearing_line(
+                data[f'valueIngredient_{value}'])
     return ingredients
