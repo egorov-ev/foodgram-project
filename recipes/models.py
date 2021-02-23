@@ -67,7 +67,7 @@ class RecipeIngredient(models.Model):
                                related_name='ingredients_amounts')
     ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
                                    on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=15,
+    quantity = models.DecimalField(max_digits=19,
                                    decimal_places=2,
                                    verbose_name='Количество',
                                    validators=[MinValueValidator(1)])
