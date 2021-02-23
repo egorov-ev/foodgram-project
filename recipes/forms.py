@@ -54,8 +54,11 @@ class RecipeForm(forms.ModelForm):
             query.append(RecipeIngredient(
                 recipe=instance,
                 ingredient=ingredient,
-                quantity=Decimal(value.replace(',', '.'))
-            ))
+                # quantity=Decimal(value.replace(',', '.')
+                quantity=value,
+                # )
+            )
+            )
 
         RecipeIngredient.objects.bulk_create(query)
         self.save_m2m()
