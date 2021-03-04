@@ -67,10 +67,6 @@ class RecipeIngredient(models.Model):
                                related_name='ingredients_amounts')
     ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
                                    on_delete=models.CASCADE)
-    # quantity = models.DecimalField(max_digits=15,
-    #                                decimal_places=3,
-    #                                verbose_name='Количество',
-    #                                validators=[MinValueValidator(1)])
     quantity = models.PositiveSmallIntegerField()
 
     class Meta:
