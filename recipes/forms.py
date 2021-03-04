@@ -51,6 +51,9 @@ class RecipeForm(forms.ModelForm):
         query = []
         for ingredient_name, value in ingredients.items():
             ingredient = get_object_or_404(Ingredient, title=ingredient_name)
+            # print('instance=', instance)
+            # print('ingredient=', ingredient)
+            # print('value=', value)
             query.append(RecipeIngredient(
                 recipe=instance,
                 ingredient=ingredient,
