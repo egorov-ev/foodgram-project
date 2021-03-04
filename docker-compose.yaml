@@ -24,7 +24,7 @@ services:
       - mediafiles:/code/media
     env_file:
       - ./.env
-    entrypoint: /code/entrypoint.sh
+    # entrypoint: /code/entrypoint.sh
 
   nginx:
     image: nginx:1.19
