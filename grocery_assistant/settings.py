@@ -115,7 +115,7 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
-# DEBUG = False
+DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
 
@@ -129,16 +129,3 @@ DATABASES = {
         'PORT': os.environ['DB_PORT'],
     }
 }
-
-# Отладка проекта
-
-DEBUG = True
-
-# ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
