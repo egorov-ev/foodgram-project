@@ -19,7 +19,7 @@ def is_subscribed_to(user, author):
 
 @register.filter
 def has_follower(author_id, user):
-    return user.follower.filter(author=author_id).exists()
+    return user.follower.filter(author=author_id, user=user).exists()
 
 
 @register.filter
