@@ -7,13 +7,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Count, Sum
 from django.http import FileResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from grocery_assistant.settings import PAGINATION_PAGE_SIZE
 
 from .forms import RecipeForm
+from .mixins import IsAuthorMixin
 from .models import Recipe, Tag
 from .utils import generate_purchases_pdf
 
@@ -106,7 +107,7 @@ class NewRecipe(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class EditRecipe(LoginRequiredMixin, UpdateView):
+class EditRecipe(LoginRequiredMixin, IsAuthorMixin, UpdateView):
     """
     Изменение содержимого рецепта.
     """
@@ -115,19 +116,8 @@ class EditRecipe(LoginRequiredMixin, UpdateView):
     template_name = 'recipes/form_recipe.html'
     success_url = reverse_lazy('index')
 
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Проверяем, что только автор рецепта может его изменить.
-        """
-        obj = self.get_object()
-        if obj.author != self.request.user:
-            return redirect(reverse('slug_recipe_view', kwargs={
-                'slug': obj.slug, 'recipe_id': obj.id}))
-        response = super(EditRecipe, self).dispatch(request, *args, **kwargs)
-        return response
 
-
-class DeleteRecipe(LoginRequiredMixin, DeleteView):
+class DeleteRecipe(LoginRequiredMixin, IsAuthorMixin, DeleteView):
     """
     Удаление рецепта.
     """

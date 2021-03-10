@@ -61,10 +61,12 @@ class RecipeIngredient(models.Model):
     """
     Модель хранящая в себе связь рецепта и ингредиента.
     """
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
+    recipe = models.ForeignKey(Recipe,
+                               on_delete=models.CASCADE,
                                verbose_name='Рецепт',
                                related_name='ingredients_amounts')
-    ingredient = models.ForeignKey(Ingredient, verbose_name='Ингредиент',
+    ingredient = models.ForeignKey(Ingredient,
+                                   verbose_name='Ингредиент',
                                    on_delete=models.CASCADE)
     quantity = models.PositiveSmallIntegerField()
 

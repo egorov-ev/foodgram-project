@@ -44,13 +44,23 @@
                         <div class="form__field-group">
                             <div class="form__field-group-ingredientes">
                                 <div class="form__dropdown">
-                                    <input type="text" id="nameIngredient" class="form__input" >
+                                    <input type="text" id="nameIngredient" class="form__input" maxlength="30">
                                     <div class="form__dropdown-items"></div>
                                 </div>
                                 <input type="number" id="cantidad" class="form__input" min="0">
                                 <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                             </div>
-                            <div class="form__field-group-ingredientes-container"></div>
+                            <div class="form__field-group-ingredientes-container">
+                                {% for i in recipe.ingredients_amounts.all %}
+                                    <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
+                                      <span> {{ i.ingredient.title }} {{ i.quantity }} {{ i.ingredient.unit_measure }}</span>
+                                      <span class="form__field-item-delete"></span>
+                                      <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ i.ingredient.title }}">
+                                      <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ i.quantity }}">
+                                      <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ i.ingredient.unit_measure }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
                             <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                             <span class="form__error">{{ error }}</span>
                         </div>

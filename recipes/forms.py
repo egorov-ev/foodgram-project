@@ -12,7 +12,8 @@ class RecipeForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(), to_field_name='title', )
     ingredients = forms.ModelMultipleChoiceField(
-        queryset=Ingredient.objects.all(), to_field_name='title')
+        queryset=Ingredient.objects.all(), to_field_name='title', )
+    unit_measure = []
 
     class Meta:
         model = Recipe
