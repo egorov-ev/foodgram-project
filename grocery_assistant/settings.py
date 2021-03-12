@@ -115,7 +115,7 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_PORT = os.environ['EMAIL_PORT']
 EMAIL_USE_TLS = os.environ['EMAIL_USE_TLS']
 
-DEBUG = False
+# DEBUG = False
 
 ALLOWED_HOSTS = ['*', ]
 
@@ -132,7 +132,7 @@ DATABASES = {
 
 # Отладка проекта
 
-# DEBUG = True
+DEBUG = True
 #
 # ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1']
 #
